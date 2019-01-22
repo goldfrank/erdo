@@ -28,7 +28,7 @@ Ubuntu 18.04's package manager can install graphviz using `sudo apt install grap
 
 **Quick example:**
 
-Put erdo.pyt in your working directory, and import the library:
+Put erdo.py in your working directory, and import the library:
 ```python
 from erdo import *
 ```
