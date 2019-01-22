@@ -1,2 +1,65 @@
 # erdo
-Library for decision trees
+
+It's the first version, so let's call it 0.1
+
+This is a library for evaluating and graphically displaying decision trees. Erdő is the Hungarian word for forest; umlauts in software are obnoxious.
+
+**I basically wrote this in an afternoon, so it probably has bugs.**
+
+It is written for Python 3.6. It uses Python 3 print and division, so you'll have to import those if you'd like to use it with Python 2.7.
+
+## Dependencies
+
+It has one Python library dependency:
+graphviz
+
+`pip install graphviz` worked for me to install that.
+The graphviz library is dependent on graphviz-- this is installed automatically with Ubuntu 18.04, which is the OS I use, but can be installed for other operating systems here: https://graphviz.gitlab.io/download/
+
+
+## Usage:
+* Declare nodes. There are three types: decision, uncertainty, and value.
+* Add nodes as children of other nodes
+* Nodes should be delcared before adding them as children.
+* Create the graph
+
+**Quick example:**
+
+Import the library:
+```python
+from erdo import *
+```
+
+First, create two value nodes corresponding to "sunshine given outdoors" and "rain given outdoors" :
+```python
+sun_o = Value_node(1, name='Sunshine | Outdoors')
+rain_o = Value_node(0, name='Rain | Outdoors')
+```
+
+Then, create an uncertainty node corresponding to "outdoors" and add the first two nodes as children:
+
+```python
+outdoors = Uncertainty_node(name='Outdoors')
+outdoors.child(sun_o, .4)
+outdoors.child(rain_o, .6)
+```
+Finally, graph it:
+
+```python
+create_graph(outdoors)
+```
+The output looks like this:
+
+[logo]: https://github.com/goldfrank/erdo/ "Example"
+
+
+## Goals
+
+My goals for this were to make a way to layout decision trees with concise and human-readable code, and generate human-readable graphic output. This is basically working, but probably fails in some cases. Please tell me if you find a failure case!
+
+I have some additional goals, including:
+* Generally the layout look better and more professional
+* Generate sub-graphs for more easily-printed output. Large graphs display as one enormous image.
+* Handle probabilistic uncertainty nodes. Right now, everythjing is either binomial or multinomial.
+* Handle non-binomial tests
+* Handle bayesian influence diagrams-- be able to display the same problem in both formats.
