@@ -71,7 +71,7 @@ My goals for this were to make a way to layout decision trees with concise and h
 I have some additional goals, including:
 * Generally the layout look better and more professional
 * Generate sub-graphs for more easily-printed output. Large graphs display as one enormous image.
-* Handle probabilistic uncertainty nodes. Right now, everythjing is either binomial or multinomial.
+* Handle probabilistic uncertainty nodes. Right now, everything is either binomial or multinomial.
 * Handle non-binomial tests
 * Handle bayesian influence diagrams-- be able to display the same problem in both formats.
 
