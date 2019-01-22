@@ -91,6 +91,7 @@ class Decision_node:
         self.decision = None
         self.children = deepcopy(children)
         self.is_test = False
+        self.is_control = False
         self.testval = None
         self.cost = None
 
@@ -123,6 +124,7 @@ class Decision_node:
 
     def label(self):
         if self.is_test == True: return (self.name + '\n Decision: ' + str(self.decision)  + '\n Expected Utility: ' + shorten(self.u) + '\n Test Value: ' + shorten(self.testval) + '\n Test Cost: ' + shorten(self.cost))
+        if self.is_control == True: return (self.name + '\n Decision: ' + str(self.decision)  + '\n Expected Utility: ' + shorten(self.u) + '\n Control Value: ' + shorten(self.testval) + '\n Control Cost: ' + shorten(self.cost))
         return (self.name + '\n Decision: ' + str(self.decision)  + '\n Expected Utility: ' + shorten(self.u))
 
 #value node
@@ -187,17 +189,33 @@ def wave_wand(current, node):
         return
     if current.node() == 'value': return
 
-def summon_the_wizard(target_graph, target_node, wizard_name='The Wizard', paythewizard=0):
+def summon_the_wizard(target_graph, target_node, wizard_name='Summon The Wizard', paythewizard=0, condition='Wizard'):
     #the wizard can make *anything* happen
-    print(wizard_name)
     new = []
-    new.append(target_graph.clone(condition = " | Wizard"))
-    new.append(target_graph.clone(condition = " | No Wizard"))
-    wave_wand(new[0], target_node)
-    wizard = Decision_node(name='Summon ' + str(wizard_name) + '?')
-    wizard.child(new[0])
-    wizard.child(new[1])
-    return wizard
+    new.append(target_graph.clone(condition = " | " + condition))
+    new.append(target_graph.clone(condition = " | No " + condition))
+    if isinstance(target_node, str):
+        wave_wand(new[0], target_node)
+        wizard = Decision_node(name=str(wizard_name) + '?')
+        wizard.child(new[0])
+        wizard.child(new[1])
+        wizard.is_control = True
+        wizard.cost = paythewizard
+        wizard.testval = (new[0].utility()-new[1].utility())
+        return wizard
+    if isintance(target_node, (tuple, list)):
+        for t in target_node:
+            wave_wand(new[0], t)
+        wizard = Decision_node(name=str(wizard_name) + '?')
+        wizard.is_control = True
+        wizard.cost = paythewizard
+        wizard.testval = (new[0].utility()-new[1].utility())
+        wizard.child(new[0])
+        wizard.child(new[1])
+        return wizard
+
+def add_control(target_graph, target_node, name='Control', cost=0, condition='Control'):
+    return summon_the_wizard(target_graph, target_node, wizard_name=name, paythewizard=cost, condition=condition)
 
 def uncertainty_check(e, unc):
     e = e
@@ -438,19 +456,31 @@ def add_test(decision, uncertainty, truepos=1, trueneg=1, testname='Test', cost=
 
 
 #test case
+#party problem from Howard and Abbas
+#with examples of control and testing
+'''from erdo import *
 
-'''short = Value_node(10, name='Short Commute')
-jam = Value_node(2, name ='Traffic Jam')
-broken = Value_node(-10, name='Car Crash')
-normal_train = Value_node(6, name='Normal Train Commute')
-slow_train = Value_node(3, name='Slow Train Commute')
-drive = Uncertainty_node(name='Drive', children=[[short, .4],[jam, .59], [broken, .01]])
-train = Uncertainty_node(name='Take Train')
-train.child(normal_train, .8)
-train.child(slow_train, .2)
-commute = Decision_node(name='Drive or take train?')
-commute.child(drive)
-commute.child(train)
-commute_with_test, test_value = add_test(commute, 'Take Train', cost=0.1, truepos=.9, trueneg=.9)
-wizard_node = summon_the_wizard(commute_with_test, 'Car Crash', wizard_name='The Nez')
-create_graph(commute_with_test)'''
+sun_o = Value_node(1, name='Sunshine | Outdoors')
+rain_o = Value_node(0, name='Rain | Outdoors')
+outdoors = Uncertainty_node(name='Outdoors')
+outdoors.child(sun_o, .4)
+outdoors.child(rain_o, .6)
+sun_p = Value_node(.95, name='Sunshine | Porch')
+rain_p = Value_node(.32, name='Rain | Porch')
+porch = Uncertainty_node(name='Porch')
+porch.child(sun_p, .4)
+porch.child(rain_p, .6)
+sun_i = Value_node(.57, name='Sunshine | Indoors')
+rain_i = Value_node(.67, name='Rain | Indoors')
+indoors = Uncertainty_node(name='Indoors')
+indoors.child(sun_i, .4)
+indoors.child(rain_i, .6)
+party = Decision_node(name='Party Location?')
+party.child(outdoors)
+party.child(porch)
+party.child(indoors)
+#test = add_test(party, ('Outdoors','Porch','Indoors'), trueneg = .9, truepos = .9, cost=.05)
+wizard = summon_the_wizard(party, 'Rain')
+create_graph(wizard,filename='party_problem')
+#create_graph(party, filename='party')
+'''
