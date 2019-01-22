@@ -64,6 +64,10 @@ There's also some limted and probably buggy support for [testing](https://github
 
 *Howard and Abbas, _Foundations of Decision Analysis_, Figure 9.3 on page 179
 
+## Known Issues
+
+Right now, graphing and adding tests are both based on node names, which are strings. Node names cannot be duplicated or graphing will fail. I intend to update these functions to use memory addresses rather than strings.
+
 ## Goals
 
 My goals for this were to make a way to layout decision trees with concise and human-readable code, and generate human-readable graphic output. This is basically working, but probably fails in some cases. Please tell me if you find a failure case!
