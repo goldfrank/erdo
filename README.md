@@ -50,8 +50,11 @@ create_graph(outdoors)
 ```
 The output looks like this:
 
-[logo]: https://github.com/goldfrank/erdo/ "Example"
+![erdo example](https://github.com/goldfrank/erdo/blob/master/example.png "erdo example")
 
+Adding a few more nodes (see party.py for a full example) will give us the party problem from _Foundations of Decision Analysis_ by Howard and Abbas.
+
+![erdo example](https://github.com/goldfrank/erdo/blob/master/example.png "erdo example")
 
 ## Goals
 
