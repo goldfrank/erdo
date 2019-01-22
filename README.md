@@ -17,7 +17,8 @@ graphviz
 `pip install graphviz` worked for me to install it.
 
 Separately, the Python graphviz library is dependent on graphviz itself: https://graphviz.gitlab.io/download/
-Ubuntu 18.04's package manager can install graphviz using `sudo apt install graphviz`
+
+Ubuntu 18.04's package manager can install graphviz using `sudo apt install graphviz` , if you use Windows or Mac, use the link above.
 
 
 ## Usage:
