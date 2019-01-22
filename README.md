@@ -5,6 +5,7 @@ It's the first version, so let's call it 0.1
 This is a library for evaluating and graphically displaying decision trees. Erdő is the Hungarian word for forest; umlauts in software are obnoxious.
 
 **I basically wrote this in an afternoon, so it probably has bugs.**
+I also don't really consider myself 
 
 It is written for Python 3.6. It uses Python 3 print and division, so you'll have to import those if you'd prefer to use it with Python 2.7.
 
@@ -52,9 +53,11 @@ The output looks like this:
 
 ![erdo example](https://github.com/goldfrank/erdo/blob/master/example.png "erdo example")
 
-Adding a few more nodes (see party.py for a full example) will give us the party problem from _Foundations of Decision Analysis_ by Howard and Abbas.
+Adding a few more nodes (see [party.py](https://github.com/goldfrank/erdo/blob/master/party.py) for a full example) will give us the party problem from _Foundations of Decision Analysis_ by Howard and Abbas.
 
 ![erdo example 2](https://github.com/goldfrank/erdo/blob/master/example2.png "erdo example 2")
+
+There's also some limted and probably buggy support for [testing](https://github.com/goldfrank/erdo/blob/master/party_test.py) and control.
 
 ## Goals
 
