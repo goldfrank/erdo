@@ -54,7 +54,7 @@ The output looks like this:
 
 Adding a few more nodes (see party.py for a full example) will give us the party problem from _Foundations of Decision Analysis_ by Howard and Abbas.
 
-![erdo example](https://github.com/goldfrank/erdo/blob/master/example.png "erdo example")
+![erdo example 2](https://github.com/goldfrank/erdo/blob/master/example2.png "erdo example 2")
 
 ## Goals
 
