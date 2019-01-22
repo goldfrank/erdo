@@ -6,7 +6,7 @@ This is a library for evaluating and graphically displaying decision trees. Erd≈
 
 **I basically wrote this in an afternoon, so it probably has bugs.**
 
-It is written for Python 3.6. It uses Python 3 print and division, so you'll have to import those if you'd like to use it with Python 2.7.
+It is written for Python 3.6. It uses Python 3 print and division, so you'll have to import those if you'd prefer to use it with Python 2.7.
 
 ## Dependencies
 
@@ -25,7 +25,7 @@ The graphviz library is dependent on graphviz-- this is installed automatically 
 
 **Quick example:**
 
-Import the library:
+Put erdo.pyt in your working directory, and import the library:
 ```python
 from erdo import *
 ```
