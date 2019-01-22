@@ -57,7 +57,8 @@ Adding a few more nodes (see [party.py](https://github.com/goldfrank/erdo/blob/m
 
 ![erdo example 2](https://github.com/goldfrank/erdo/blob/master/example2.png "erdo example 2")
 
-There's also some limted and probably buggy support for [testing](https://github.com/goldfrank/erdo/blob/master/party_test.py) and [control](https://github.com/goldfrank/erdo/blob/master/party_control.py). That's right, the function for adding control is `summon_the_wizard`, because the wizard can make anything happen. (Howard and Abbas, _Foundations of Decision Analysis_, Figure 9.3 on page 
+There's also some limted and probably buggy support for [testing](https://github.com/goldfrank/erdo/blob/master/party_test.py) and [control](https://github.com/goldfrank/erdo/blob/master/party_control.py). That's right, the function for adding control is `summon_the_wizard`, because the [wizard[(https://github.com/goldfrank/erdo/blob/master/wizard.png) can make anything happen. 
+######(Howard and Abbas, _Foundations of Decision Analysis_, Figure 9.3 on page 179)
 
 ## Goals
 
