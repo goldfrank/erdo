@@ -10,7 +10,7 @@ from graphviz import Digraph
 
 #float to string
 def shorten(x):
-    return str(((x * 1000 // 1))/1000)
+    return str(round(x, 2))
 
 # default risk-neutral value function
 def risk_neutral(x):
@@ -78,7 +78,6 @@ class Uncertainty_node:
     def label(self):
         self.utility()
         if self.is_test == True:
-            print('yuup')
             return (self.name + '\n Expected Utility: ' + shorten(self.u) + '\n Test Value: ' + shorten(self.testval))
         else: return (self.name + '\n Expected Utility: ' + shorten(self.u))
 
@@ -221,10 +220,10 @@ def uncertainty_check(e, unc):
     e = e
     found = 0
     if e.node() == 'decision':
-        print('d - checking ' + str(e.name))
+        #print('d - checking ' + str(e.name))
         for c in e.children:
             if c.name[0:len(unc)] == unc:
-                print('found ' + c.name[0:len(unc)])
+                #print('found ' + c.name[0:len(unc)])
                 found = 1
                 if len(c.children) != 2: raise AttributeError('Uncertainty to be tested must only have two possibilities')
                 else:
@@ -238,10 +237,10 @@ def uncertainty_check(e, unc):
             if temp != False:
                 return temp
     elif e.node() == 'uncertainty':
-        print('u - checking ' + str(e.name))
+        #print('u - checking ' + str(e.name))
         for c in e.children:
             if c[0].name[0:len(unc)] == unc:
-                print('found ' + c[0].name[0:len(unc)])
+                #print('found ' + c[0].name[0:len(unc)])
                 found = 1
                 if len(c[0].children) != 2: raise AttributeError('Uncertainty to be tested must only have two possibilities')
                 else:
@@ -251,57 +250,57 @@ def uncertainty_check(e, unc):
                     posprob = c[0].children[1][1]
                     return [negstring, posstring, negprob, posprob]
         if found == 0:
-            print ('not found ' + str(e.name))
+            #print ('not found ' + str(e.name))
             for c in e.children:
-                print(c[0].name)
+                #print(c[0].name)
                 temp = uncertainty_check(c[0], unc)
                 if temp != False:
                     return temp
     elif e.node() == 'value':
-        print('Value node ' + str(e.name))
+        #print('Value node ' + str(e.name))
         return False
     return False
 
 def uncertainty_mod(e, unc, neg, pos):
     found = 0
     if e.node() == 'decision':
-        print('d - checking ' + str(e.name))
+        #print('d - checking ' + str(e.name))
         for c in e.children:
             if c.name[0:len(unc)] == unc:
-                print('found ' + c.name[0:len(unc)])
+                #print('found ' + c.name[0:len(unc)])
                 found = 1
                 if len(c.children) != 2: raise AttributeError('Uncertainty to be tested must only have two possibilities')
                 else:
-                    print('doing it')
-                    print('before: ' +str(c.children[0][1]))
+                    #print('doing it')
+                    #print('before: ' +str(c.children[0][1]))
                     c.children[0][1] = neg
                     c.children[1][1] = pos
-                    print('after: ' +str(c.children[0][1]))
+                    #print('after: ' +str(c.children[0][1]))
                     return True
             temp = uncertainty_mod(c, unc, pos, neg)
             if temp != False:return temp
     elif e.node() == 'uncertainty':
-        print('u - checking ' + str(e.name))
+        #print('u - checking ' + str(e.name))
         for c in e.children:
             if c[0].name[0:len(unc)] == unc:
-                print('found! ' + c[0].name[0:len(unc)])
+                #print('found! ' + c[0].name[0:len(unc)])
                 found = 1
                 if len(c[0].children) != 2: raise AttributeError('Uncertainty to be tested must only have two possibilities')
                 else:
-                    print('doing it')
-                    print('before: ' +str(c[0].children[0][1]))
+                    #print('doing it')
+                    #print('before: ' +str(c[0].children[0][1]))
                     c[0].children[0][1] = neg
                     c[0].children[1][1] = pos
-                    print('after: ' +str(c[0].children[0][1]))
+                    #print('after: ' +str(c[0].children[0][1]))
                     return True
         if found == 0:
-            print ('not found ' + str(e.name))
+            #print ('not found ' + str(e.name))
             for c in e.children:
-                #print(c[0].name)
+                ##print(c[0].name)
                 temp = uncertainty_mod(c[0], unc, neg, pos)
                 if temp != False: return temp
     elif e.node() == 'value':
-        print('Value node ' + str(e.name))
+        #print('Value node ' + str(e.name))
         return False
     return False
 
@@ -315,7 +314,7 @@ def add_test(decision, uncertainty, truepos=1, trueneg=1, testname='Test', cost=
         temp = uncertainty_check(decision, uncertainty)
         if temp != False: negstring, posstring, negprob, posprob = temp
         else:
-            print(temp)
+            #print(temp)
             raise AttributeError('Uncertainty node does not exist within specified decision')
 
         # compute marginal probabilities for test
@@ -343,7 +342,7 @@ def add_test(decision, uncertainty, truepos=1, trueneg=1, testname='Test', cost=
         new.append(decision.clone(condition = negstring))
         new.append(decision.clone(condition = posstring))
         new.append(decision.clone(condition = ' | No Test'))
-        print('--making modifications--')
+        #print('--making modifications--')
 
         '''for c in new[0].children:
             if c.name[0:len(uncertainty)] == uncertainty:
@@ -385,7 +384,7 @@ def add_test(decision, uncertainty, truepos=1, trueneg=1, testname='Test', cost=
         temp = uncertainty_check(decision, uncertainty[0])
         if temp != False: negstring, posstring, negprob, posprob = temp
         else:
-            print(temp)
+            #print(temp)
             raise AttributeError('Uncertainty node does not exist within specified decision')
 
         # compute marginal probabilities for test
@@ -413,7 +412,7 @@ def add_test(decision, uncertainty, truepos=1, trueneg=1, testname='Test', cost=
         new.append(decision.clone(condition = negstring))
         new.append(decision.clone(condition = posstring))
         new.append(decision.clone(condition = ' | No Test'))
-        print('--making modifications--')
+        #print('--making modifications--')
 
         '''for c in new[0].children:
             if c.name[0:len(uncertainty)] == uncertainty:
