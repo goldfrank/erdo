@@ -2,20 +2,22 @@
 
 It's the first version, so let's call it 0.1
 
-This is a library for evaluating and graphically displaying decision trees. Erdő is the Hungarian word for forest; umlauts in software are obnoxious.
+This is a library for evaluating and graphically displaying decision trees. 'Erdő' is the Hungarian word for forest; umlauts in software are obnoxious.
 
 **I basically wrote this in an afternoon, so it probably has bugs.**
-I also don't really consider myself 
+I'm not an extraordinarily good programmer. My code is not well-documented. That will improve, hopefully. Many things will improve, hopefully.
 
-It is written for Python 3.6. It uses Python 3 print and division, so you'll have to import those if you'd prefer to use it with Python 2.7.
+Erdo is written for Python 3.6. It uses Python 3 print and division, so you'll have to import those if you'd prefer to use it with Python 2.7.
 
 ## Dependencies
 
 It has one Python library dependency:
 graphviz
 
-`pip install graphviz` worked for me to install that.
-The graphviz library is dependent on graphviz-- this is installed automatically with Ubuntu 18.04, which is the OS I use, but can be installed for other operating systems here: https://graphviz.gitlab.io/download/
+`pip install graphviz` worked for me to install it.
+
+Separately, the Python graphviz library is dependent on graphviz itself: https://graphviz.gitlab.io/download/
+Ubuntu 18.04's package manager can install graphviz using `sudo apt install graphviz`
 
 
 ## Usage:
@@ -71,3 +73,5 @@ I have some additional goals, including:
 * Handle probabilistic uncertainty nodes. Right now, everythjing is either binomial or multinomial.
 * Handle non-binomial tests
 * Handle bayesian influence diagrams-- be able to display the same problem in both formats.
+
+I'll probably get to some of them in the future.
