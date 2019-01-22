@@ -57,7 +57,7 @@ Adding a few more nodes (see [party.py](https://github.com/goldfrank/erdo/blob/m
 
 ![erdo example 2](https://github.com/goldfrank/erdo/blob/master/example2.png "erdo example 2")
 
-There's also some limted and probably buggy support for [testing](https://github.com/goldfrank/erdo/blob/master/party_test.py) and control.
+There's also some limted and probably buggy support for [testing](https://github.com/goldfrank/erdo/blob/master/party_test.py) and [control](https://github.com/goldfrank/erdo/blob/master/party_control.py).
 
 ## Goals
 
