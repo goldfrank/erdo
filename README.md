@@ -1,6 +1,6 @@
 # erdo
 
-It's the first version, so let's call it 0.1
+Version 0.11 (first update) Now handles multinomial tests.
 
 This is a library for evaluating and graphically displaying decision trees. 'Erdő' is the Hungarian word for forest; umlauts in software are obnoxious.
 
@@ -76,7 +76,6 @@ I have some additional goals, including:
 * Generally the layout look better and more professional
 * Generate sub-graphs for more easily-printed output. Large graphs display as one enormous image.
 * Handle probabilistic uncertainty nodes. Right now, everything is either binomial or multinomial.
-* Handle non-binomial tests
 * Handle bayesian influence diagrams-- be able to display the same problem in both formats.
 
 I'll probably get to some of them in the future.
