@@ -7,10 +7,11 @@
 # from __future__ import print_function, division
 from copy import deepcopy, copy
 from graphviz import Digraph
+import numpy as np
 
 #float to string
 def shorten(x):
-    return str(round(x, 2))
+    return str(round(x, 3))
 
 # default risk-neutral value function
 def risk_neutral(x):
@@ -261,6 +262,45 @@ def uncertainty_check(e, unc):
         return False
     return False
 
+def uncertainty_check_multi(e, unc):
+    e = e
+    found = 0
+    if e.node() == 'decision':
+        #print('d - checking ' + str(e.name))
+        for c in e.children:
+            if c.name[0:len(unc)] == unc:
+                #print('found ' + c.name[0:len(unc)])
+                found = 1
+                probs = []
+                for i in range(len(c[0].children)):
+                    probs.append(c[0].childrenb[i][1])
+                return probs
+            temp = uncertainty_check_multi(c, unc)
+            if temp != False:
+                return temp
+    elif e.node() == 'uncertainty':
+        #print('u - checking ' + str(e.name))
+        for c in e.children:
+            if c[0].name[0:len(unc)] == unc:
+                #print('found ' + c[0].name[0:len(unc)])
+                found = 1
+                probs = []
+                for i in range(len(c[0].children)):
+                    probs.append(c[0].children[i][1])
+                return probs
+        if found == 0:
+            #print ('not found ' + str(e.name))
+            for c in e.children:
+                #print(c[0].name)
+                temp = uncertainty_check_multi(c[0], unc)
+                if temp != False:
+                    return temp
+    elif e.node() == 'value':
+        #print('Value node ' + str(e.name))
+        return False
+    return False
+
+
 def uncertainty_mod(e, unc, neg, pos):
     found = 0
     if e.node() == 'decision':
@@ -304,7 +344,37 @@ def uncertainty_mod(e, unc, neg, pos):
         return False
     return False
 
-
+def uncertainty_mod_multi(e, unc, likely):
+    found = 0
+    if e.node() == 'decision':
+        #print('d - checking ' + str(e.name))
+        for c in e.children:
+            if c.name[0:len(unc)] == unc:
+                #print('found ' + c.name[0:len(unc)])
+                found = 1
+                for i in range(likely):
+                    c.children[i][1] = likely[i]
+                return True
+            temp = uncertainty_mod_multi(c, unc, likely)
+            if temp != False:return temp
+    elif e.node() == 'uncertainty':
+        #print('u - checking ' + str(e.name))
+        for c in e.children:
+            if c[0].name[0:len(unc)] == unc:
+                found = 1
+                for i in range(len(likely)):
+                    c[0].children[i][1] = likely[i]
+                return True
+        if found == 0:
+            #print ('not found ' + str(e.name))
+            for c in e.children:
+                ##print(c[0].name)
+                temp = uncertainty_mod_multi(c[0], unc, likely)
+                if temp != False: return temp
+    elif e.node() == 'value':
+        #print('Value node ' + str(e.name))
+        return False
+    return False
 #uncertainty must be one or two levels below the decision
 def add_test(decision, uncertainty, truepos=1, trueneg=1, testname='Test', cost=0):
     posstring = ''
@@ -453,6 +523,75 @@ def add_test(decision, uncertainty, truepos=1, trueneg=1, testname='Test', cost=
         test_decision.cost = cost
         return test_decision
 
+# temporarily require a list/tuple of strings, even if only one element
+# testbehavior format [['0', '1', '2'], ['0', '1', '2'], ['0', '1', '2']] for distinctions 0, 1, 2
+# e.g. testbehavior[i][j] = p("j" | i)
+# distinctions format is list of names, e.g. ['0name', '1name', '2name']
+#
+def add_multi_test(decision, uncertainty, testbehavior, distinctions, testname='Test', cost=0):
+    if isinstance(uncertainty, (list, tuple)):
+        #temp = uncertainty_check(decision, uncertainty[0])
+        #if temp != False: negstring, posstring, negprob, posprob = temp
+        #else:
+            #print(temp)
+        #    raise AttributeError('Uncertainty node does not exist within specified decision')
+
+        # compute marginal probabilities for test
+        # marginals is array of marginals e.g. marginals[i][j] = p(i)*p("j" | i)
+        # testbehavior - probability of indicating j given i
+        probs = uncertainty_check_multi(decision, uncertainty[0])
+        marginals = np.zeros((len(testbehavior),len(testbehavior)))
+        for i in range(len(testbehavior)):
+            for j in range(len(testbehavior[i])):
+                marginals[i][j] = probs[i]*testbehavior[i][j]
+
+        #print(marginals)
+
+        #bayesian inference
+        #likelihoods - probability of i given indicating j
+        #likelihoods[i][j] = p(i | "j")
+        marginal_sums = np.zeros(len(marginals))
+        for i in range(len(marginals)):
+            for j in range(len(marginals)):
+                marginal_sums[j] += marginals[i][j]
+
+        likelihoods = np.zeros((len(testbehavior),len(testbehavior)))
+        for i in range(len(testbehavior)):
+            for j in range(len(testbehavior)):
+                likelihoods[i][j] = marginals[i][j]/marginal_sums[j]
+
+        print(likelihoods)
+
+
+        new = []
+        for i in range(len(likelihoods)):
+            new.append(decision.clone(condition = " | \"" + distinctions[i] + "\"") )
+            likely = []
+            for j in range(len(likelihoods)):
+                likely.append(likelihoods[j][i])
+            for u in uncertainty:
+                uncertainty_mod_multi(new[i], u, likely)
+        new.append(decision.clone(condition = 'No Test'))
+
+        new_uncertain = Uncertainty_node(name=testname)
+        for i in range(len(new)-1):
+            new_uncertain.child(new[i],marginal_sums[i])
+        test_decision = Decision_node(name="Test Decision", children=[new_uncertain, new[-1]])
+
+        if new_uncertain.utility() - new[-1].utility() > 0: test_value = new_uncertain.utility() - new[-1].utility()
+        else: test_value = 0
+
+        '''new[0] = (decision.clone(condition = negstring, cost=cost))
+        new[1] = (decision.clone(condition = posstring, cost=cost))
+        for u in uncertainty:
+            uncertainty_mod(new[0], u, neg_negtest, pos_negtest)
+            uncertainty_mod(new[1], u, neg_postest, pos_postest)
+        new_uncertain = Uncertainty_node(name=testname, children=[[new[0], prob_negtest],[new[1], prob_postest]])
+        test_decision = Decision_node(name="Test Decision", children=[new_uncertain, new[2]])'''
+        test_decision.is_test = True
+        test_decision.testval = test_value
+        test_decision.cost = cost
+        return test_decision
 
 #test case
 #party problem from Howard and Abbas
